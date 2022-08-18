@@ -1,0 +1,141 @@
+<meta charset="UTF-8">
+<link href="/style.css" rel="stylesheet" type="text/css" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Brainfuck in rubyTiny Programs: Rosetta code for implementations</title>
+
+<article>
+  
+  <a href="/">Tiny Programs</a>
+  <h1>Brainfuck in ruby</h1>
+  <div class="authors">
+    <img src="https://github.com/kddnewton.png" / >
+    <span>Contributed by <a href="https://github.com/kddnewton">kddnewton</a></span>
+  </div>
+
+  <section>
+    <h2>Implementation</h2>
+    <div class="description">
+      
+      <p>An implementation of the Brainfuck programming language.</p>
+<p>See <a href="https://en.wikipedia.org/wiki/Brainfuck">https://en.wikipedia.org/wiki/Brainfuck</a> for details.</p>
+
+      
+    </div>
+    <a href="https://github.com/eatonphil/tinyprograms/blob/main/Brainfuck/ruby/main.rb">Source Code</a>
+    <pre><code># frozen_string_literal: true
+
+module Bf
+  def self.run(prog)
+    data_stack = Hash.new { 0 }
+    data_pointer = 0
+
+    instruction_pointer = 0
+    instruction_stack = []
+
+    while instruction_pointer < prog.length
+      case prog[instruction_pointer]
+      when ">"
+        data_pointer += 1
+      when "<"
+        data_pointer -= 1
+      when "+"
+        data_stack[data_pointer] += 1
+      when "-"
+        data_stack[data_pointer] -= 1
+      when "."
+        STDOUT.putc(data_stack[data_pointer].chr)
+      when ","
+        data_stack[data_pointer] = STDIN.getc.ord
+      when "["
+        stack = 1
+        ending = instruction_pointer + 1
+
+        while stack > 0
+          case prog[ending]
+          when "["
+            stack += 1
+          when "]"
+            stack -= 1
+          end
+
+          ending += 1  
+        end
+
+        if data_stack[data_pointer] == 0
+          instruction_pointer = ending
+        else
+          instruction_stack << instruction_pointer
+        end
+      when "]"
+        if data_stack[data_pointer] != 0
+          instruction_pointer = instruction_stack.last - 1
+        end
+        instruction_stack.pop
+      end
+
+      instruction_pointer += 1
+    end
+  end
+end
+
+Bf.run(ARGF.read)
+</code></pre>
+  </section>
+
+  <section>
+    <h2>Build and run</h2>
+    <p>These steps are linux only.</p>
+    <pre><code>
+$ ruby main.rb $myProgram</code></pre>
+  </section>
+
+  
+
+  <section>
+    <h2>All implementations</h2>
+    <ul>
+      
+      <li><a href="/Brainfuck/d.html">d</a></li>
+      
+      <li><a href="/Brainfuck/freepascal.html">freepascal</a></li>
+      
+      <li><a href="/Brainfuck/go.html">go (Reference)</a></li>
+      
+      <li><a href="/Brainfuck/java.html">java</a></li>
+      
+      <li><a href="/Brainfuck/ocaml.html">ocaml</a></li>
+      
+      <li><a href="/Brainfuck/r.html">r</a></li>
+      
+      <li><a href="/Brainfuck/ruby.html">ruby</a></li>
+      
+      <li><a href="/Brainfuck/rust.html">rust</a></li>
+      
+      <li><a href="/Brainfuck/zig.html">zig</a></li>
+      
+    </ul>
+  </section>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/styles/default.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/languages/ruby.min.js"></script>
+<script>hljs.highlightAll();</script>
+
+
+  <footer>
+    <p>Copyright 2022 Phil Eaton</p>
+    <p>
+      <a href="https://github.com/eatonphil/tinyprograms/blob/main/LICENSE.MD">MIT Licensed</a>
+    </p>
+  </footer>
+</article>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-D8MWLGQV56"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-D8MWLGQV56');
+</script>
